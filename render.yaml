@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: task-backend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: TYPEORM_DATABASE
+        value: ./db.sqlite
+      - key: API_PORT
+        value: 3001
+    plan: free
+
+  - type: web
+    name: task-frontend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview -- --port 4000 --host
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: task-backend
+          envVarKey: RENDER_EXTERNAL_URL
+    plan: free
